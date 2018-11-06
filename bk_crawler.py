@@ -126,8 +126,8 @@ class BkCrawler:
         start = time.time()
         dates = []
         now = datetime.datetime.now()
-        date_end_rage = 18
-        for i in range(1, date_end_rage):
+        date_end_rage = 31
+        for i in range(0, date_end_rage):
             delta = datetime.timedelta(days=i)
             n_days = now + delta
             dates.append(n_days.strftime("%Y%m%d"))
@@ -145,8 +145,13 @@ class BkCrawler:
                 if officialPrice is None:
                     logger.info("%s - %s - %s - %s - is no officialPrice" % (airline[0], airline[1], fltDate, flightNo))
                     continue
-                if int(officialPrice['price']) >= int(specialOffer['price']):
-                    logger.info("%s - %s - %s - %s - price same" % (airline[0], airline[1], fltDate, flightNo))
+                if int(officialPrice['price']) > int(specialOffer['price']):
+                    logger.info("%s - %s - %s - %s - price high" % (airline[0], airline[1], fltDate, flightNo))
+                    continue
+                if int(officialPrice['price']) == int(specialOffer['price']) \
+                        and officialPrice['cabin'] == specialOffer['cabin']:
+                    logger.info("%s - %s - %s - %s - price same and cabin same"
+                                % (airline[0], airline[1], fltDate, flightNo))
                     continue
                 result_str = ",".join([airline[0], airline[1], fltDate,
                                        officialPrice['cabinName'], officialPrice['cabin'],
